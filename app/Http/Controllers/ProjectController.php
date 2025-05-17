@@ -10,7 +10,8 @@ class ProjectController extends Controller
 {
     public function index()
     {
-        $projects = Project::all();
+        // $projects = Project::all();
+        $projects = Project::where('user_id', auth()->id())->get();
 
         return view('projects.index', compact('projects'));
     }
@@ -31,6 +32,10 @@ class ProjectController extends Controller
 
     public function edit(Project $project)
     {
+        // if ($project->user_id !== auth()->id()) {
+        //     abort(403);
+        // }
+
         return view('projects.edit', compact('project'));
     }
 
