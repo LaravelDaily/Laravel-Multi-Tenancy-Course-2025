@@ -21,6 +21,11 @@
                     <x-nav-link :href="route('projects.index')" :active="request()->routeIs('projects.*')">
                         {{ __('Projects') }}
                     </x-nav-link>
+                    @can('manage-users')
+                        <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">
+                            {{ __('Users') }}
+                        </x-nav-link>
+                    @endcan
                 </div>
             </div>
 
@@ -86,9 +91,14 @@
             <x-responsive-nav-link :href="route('tasks.index')" :active="request()->routeIs('tasks.*')">
                 {{ __('Tasks') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('projects.index')" :active="request()->routeIs('projects.*')">
-                {{ __('Projects') }}
-            </x-responsive-nav-link>
+<x-responsive-nav-link :href="route('projects.index')" :active="request()->routeIs('projects.*')">
+    {{ __('Projects') }}
+</x-responsive-nav-link>
+ @can('manage-users')
+     <x-responsive-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">
+         {{ __('Users') }}
+     </x-responsive-nav-link>
+ @endcan
         </div>
 
         <!-- Responsive Settings Options -->
