@@ -43,6 +43,13 @@
                         <x-dropdown-link :href="route('profile.edit')">
                             {{ __('Profile') }}
                         </x-dropdown-link>
+                        @if (auth()->user()->tenants()->count() > 1) 
+                            @foreach (auth()->user()->tenants as $tenant)
+                                <x-dropdown-link :href="route('tenants.change', $tenant->id)" @class(['font-bold' => auth()->user()->current_tenant_id == $tenant->id])>
+                                    {{ $tenant->name }}
+                                </x-dropdown-link>
+                            @endforeach
+                        @endif 
 
                         <!-- Authentication -->
                         <form method="POST" action="{{ route('logout') }}">

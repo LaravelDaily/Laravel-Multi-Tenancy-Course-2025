@@ -9,7 +9,8 @@ trait FilterByTenant
 {
     protected static function booted(): void
     {
-        $currentTenantId = auth()->user()->tenants->first()->id;
+        // $currentTenantId = auth()->user()->tenants->first()->id;
+        $currentTenantId = auth()->user()->current_tenant_id; 
  
         static::creating(function (Model $model) use ($currentTenantId) {
             $model->user_id = auth()->id();
