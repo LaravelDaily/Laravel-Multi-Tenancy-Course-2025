@@ -6,6 +6,8 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\StoreUserRequest;
 use App\Models\Invitation;
+use App\Notifications\SendInvitationNotification;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 
 class UserController extends Controller
@@ -26,7 +28,22 @@ class UserController extends Controller
             'email' => $request->input('email'),
             'token' => Str::random(32),
         ]);
+
+        Notification::route('mail', $request->input('email'))->notify(new SendInvitationNotification($invitation)); 
  
         return redirect()->route('users.index')->with('success', 'Invitation sent successfully');
     } 
+
+    public function acceptInvitation(string $token)
+    {
+        $invitation = Invitation::where('token', $token) 
+            ->whereNull('accepted_at')
+            ->firstOrFail();
+            
+        if (auth()->check()) { 
+            // assign a user
+        } else {
+            // redirect to register
+        }
+    }
 }
