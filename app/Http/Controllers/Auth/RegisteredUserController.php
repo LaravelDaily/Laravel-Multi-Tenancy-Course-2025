@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -41,10 +42,18 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
+        $tenant = Tenant::create([ 
+            'name' => $request->name . ' Team',
+            'domain' => $request->subdomain . '.' . config('session.domain'),
+            'database' => $request->subdomain
+        ]);
+        $user->tenants()->attach($tenant->id); 
+
         event(new Registered($user));
 
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        // return redirect(route('dashboard', absolute: false));
+        return redirect('http://' . $request->subdomain . '.' . config('session.domain') . route('dashboard', absolute: false)); 
     }
 }
