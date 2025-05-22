@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\DB;
+use Stancl\Tenancy\Database\Models\Domain;
 
 class ProfileController extends Controller
 {
@@ -48,6 +50,14 @@ class ProfileController extends Controller
 
         $user = $request->user();
 
+        foreach ($user->tenants as $tenant) { 
+            DB::transaction(function () use ($tenant, $user) {
+                Domain::where('tenant_id', $tenant->id)->delete();
+                $user->tenants()->detach($tenant->id);
+                $tenant->delete();
+            });
+        }
+
         Auth::logout();
 
         $user->delete();
@@ -55,6 +65,7 @@ class ProfileController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return Redirect::to('/');
+        // return Redirect::to('/');
+        return Redirect::to(route('home')); 
     }
 }
